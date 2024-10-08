@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Excusas</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="excuse">Excuse</string>
+    <string name="favorite">Favorite</string>
+    <string name="generar">Generate</string>
+    <string name="language">Language</string>
+    <string name="english">English</string>
+    <string name="espa_ol">Español</string>
+    <string name="icono_de_la_aplicaci_n">Icono de la aplicación</string>
+    <string name="excuseText">Excuse:</string>
+    <string name="generate">Generate</string>
+    <string name="save_to_favorites">Save to favorites</string>
 </resources>
