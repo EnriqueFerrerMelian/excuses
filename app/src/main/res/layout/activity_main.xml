@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/icono"
         android:layout_width="148dp"
-        android:layout_height="wrap_content"
+        android:layout_height="148dp"
         android:layout_marginStart="128dp"
         android:contentDescription="@string/icono_de_la_aplicaci_n"
         android:src="@drawable/avd_frame"
