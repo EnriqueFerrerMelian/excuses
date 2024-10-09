@@ -15,12 +15,10 @@ With a simple interface, you’ll get creative excuses that you can use in any s
 - 🔄 **Random excuse generation**: Get random, creative excuses with just one tap.
 - 🎲 **Variety of excuses**: Excuses for professional, personal, or humorous situations.
 - 📱 **Simple interface**: Easy-to-use, no unnecessary complications.
-- 🌐 **Internationalization**: (Planned) Switch between different languages for the excuses.
-- ⭐ **Favorites**: (Planned) Save your favorite excuses for quick access later.
-- 🔄 **Share**: (Planned) Share excuses easily via messages or social media.
+- 🌐 **Internationalization**: Switch between different languages for the excuses.
+- ⭐ **Favorites**: Save your favorite excuses for quick access later.
 
-## Screenshots
-![excusas01](https://github.com/user-attachments/assets/8928b00d-50b0-4bc9-ab7e-726fa2687513)![excusas02](https://github.com/user-attachments/assets/283acba4-428e-4037-90b8-df29b8c3c78a)
+![giphy(1)](https://github.com/user-attachments/assets/88579fcf-46ea-4db0-8057-bc8c0e9443f4)
 
 
 ## Installation
@@ -33,14 +31,6 @@ With a simple interface, you’ll get creative excuses that you can use in any s
 
 ## Technologies Used
 1. Android Studio: The entire app is built natively using Android Studio, with no external frameworks or libraries.
-
-## Future Enhancements
-
-The following features are planned, which may involve additional technologies:
-
-**Internationalization (i18n)**: The app will include support for multiple languages, allowing users to switch languages seamlessly. Depending on the approach, libraries or custom localization solutions may be added.
-**Favorite Excuses**: Users will be able to save and access their favorite excuses, possibly using SQLite or SharedPreferences for local storage.
-**Share Functionality**: Users will be able to share excuses through messaging apps or social media.
 
 ## Contributing
 
