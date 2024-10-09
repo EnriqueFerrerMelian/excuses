@@ -1,8 +1,10 @@
 package com.example.excusas.database;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 
 import java.util.List;
 
@@ -49,4 +51,26 @@ public interface ExcusesDao {
 
     @Insert
     void insertAllOutcome(List<Outcome> outcomeList);
+
+    @Query("DELETE FROM intro")
+    void deleteAllIntro();
+
+    @Query("DELETE FROM core")
+    void deleteAllCore();
+
+    @Query("DELETE FROM outcome")
+    void deleteAllOutcome();
+
+    @Query("DELETE FROM favorites")
+    void deleteAllFavorites();
+
+    @Delete
+    void deleteFavorite(Favorite favorite);
+
+    @Transaction
+    default void clearTables() {
+        deleteAllIntro();
+        deleteAllCore();
+        deleteAllOutcome();
+    }
 }

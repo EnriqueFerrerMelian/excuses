@@ -47,7 +47,7 @@ public class FavoriteFragment extends Fragment {
                 requireActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        favoritesAdapter = new FavoritesAdapter(favorites);
+                        favoritesAdapter = new FavoritesAdapter(favorites, db.excusesDao());
                         recyclerView.setAdapter(favoritesAdapter);
                     }
                 });

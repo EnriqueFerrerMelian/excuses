@@ -47,4 +47,5 @@ dependencies {
     implementation("android.arch.persistence.room:common:1.1.1")
     implementation("android.arch.persistence.room:runtime:1.1.1")
     annotationProcessor("android.arch.persistence.room:compiler:1.1.1")
+    implementation("com.google.code.gson:gson:2.10.1")
 }

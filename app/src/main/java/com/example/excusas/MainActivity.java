@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 
+
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.window.SplashScreen;
+import android.content.res.Configuration;
 
 import com.example.excusas.database.Core;
+import com.example.excusas.util.ExcuseData;
 import com.example.excusas.database.DatabaseExcuses;
 import com.example.excusas.database.ExcusesDao;
 import com.example.excusas.database.Intro;
@@ -18,22 +20,29 @@ import com.example.excusas.databinding.ActivityMainBinding;
 import com.example.excusas.fragments.ExcusesFragment;
 import com.example.excusas.fragments.FavoriteFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.gson.Gson;
 
-import java.util.Arrays;
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.Executors;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
+    SharedPreferences sharedPreferences;
     ActivityMainBinding binding;
     private DatabaseExcuses db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        db = DatabaseExcuses.getDatabase(this);
+        sharedPreferences = getSharedPreferences("language",MODE_PRIVATE);
+        String language = sharedPreferences.getString("language", "en");
+        loadExcusesFromJSON(language);
+        setLocale(language);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         super.onCreate(savedInstanceState);
         setContentView(binding.getRoot());
-        db = DatabaseExcuses.getDatabase(this);
-        populateDatabaseIfNeeded(db);
         loadFragment(new ExcusesFragment());
+
         binding.bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -64,70 +73,77 @@ public class MainActivity extends AppCompatActivity {
         popupMenu.getMenuInflater().inflate(R.menu.language_menu, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(item -> {
             if(item.getItemId()==R.id.language_english){
-                // Cambiar el idioma a inglés
+                setLocale("en");
             }
             if(item.getItemId()==R.id.language_spanish){
-                // Cambiar el idioma a español
+                setLocale("es");
             }
             return false;
         });
         popupMenu.show();
     }
 
-    public void populateDatabaseIfNeeded(DatabaseExcuses db) {
-        // Ejecutar en un hilo aparte para evitar el bloqueo de la UI
+    private void setLocale(String languageCode) {
+        String currentLanguage = Locale.getDefault().getLanguage();
+
+        if (!currentLanguage.equals(languageCode)) {
+            Locale locale = new Locale(languageCode);
+            Locale.setDefault(locale);
+            Configuration config = new Configuration();
+            config.locale = locale;
+            getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("language", languageCode);
+            editor.apply();
+
+            loadExcusesFromJSON(languageCode);
+            recreate();
+        }
+    }
+
+    private String loadJSONFromAsset(String fileName) {
+        String json = null;
+        try {
+            InputStream is = getAssets().open(fileName);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            int bytesRead = 0;
+            while (bytesRead < size) {
+                int read = is.read(buffer, bytesRead, size - bytesRead);
+                if (read == -1) {
+                    break;
+                }
+                bytesRead += read;
+            }
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return json;
+    }
+    private void loadExcusesFromJSON(String languageCode) {
+        String fileName = "excuses_" + languageCode + ".json";
+        String json = loadJSONFromAsset(fileName);
+        Gson gson = new Gson();
+        ExcuseData excuseData = gson.fromJson(json, ExcuseData.class);
+
         Executors.newSingleThreadExecutor().execute(() -> {
             ExcusesDao excusesDao = db.excusesDao();
 
-            // Comprueba si las tablas están vacías
-            if (excusesDao.countIntro() == 0) {
-                // Inserta los datos de introducción
-                List<Intro> introList = Arrays.asList(
-                        new Intro("Lo siento, no puedo ir,"),
-                        new Intro("Por favor, perdona mi ausencia,"),
-                        new Intro("Esto va a sonar loco, pero"),
-                        new Intro("Entiende esto:"),
-                        new Intro("No puedo ir porque"),
-                        new Intro("Se que vas a odiarme, pero"),
-                        new Intro("Estaba con mis cosas y BOOM!"),
-                        new Intro("Disculpa por el inconveniente, pero"),
-                        new Intro("Desgraciadamente no puedo atender,"),
-                        new Intro("Esto va a sonar como una excusa, pero")
-                );
-                excusesDao.insertAllIntro(introList);
+            excusesDao.clearTables();
+
+            for (String intro : excuseData.getIntros()) {
+                excusesDao.insertIntro(new Intro(intro));
             }
 
-            if (excusesDao.countNudo() == 0) {
-                // Inserta los datos de nudo
-                List<Core> coreList = Arrays.asList(
-                        new Core("mi sobrino"),
-                        new Core("el fantasma de hitler"),
-                        new Core("el papa"),
-                        new Core("mi ex"),
-                        new Core("la banda del pueblo"),
-                        new Core("Pedro Piqueras"),
-                        new Core("un payaso triste"),
-                        new Core("el actor de 'Salvados por la campana'"),
-                        new Core("un equipo profesional de petanca"),
-                        new Core("mi cita de Tinder")
-                );
-                excusesDao.insertAllCore(coreList);
+            for (String core : excuseData.getCores()) {
+                excusesDao.insertCore(new Core(core));
             }
 
-            if (excusesDao.countDesenlace() == 0) {
-                List<Outcome> outcomeList = Arrays.asList(
-                        new Outcome("se acaba de cagar en mi cama."),
-                        new Outcome("ha muerto delante mía."),
-                        new Outcome("no paraba de contarme chistes de 'toc toc'."),
-                        new Outcome("esta sufriendo un ataque de nervios."),
-                        new Outcome("me ha dado sifilis."),
-                        new Outcome("ha echado limonada en el depósito de gasolina."),
-                        new Outcome("me ha apuñalado."),
-                        new Outcome("ha encontrado mi caja de dientes humanos."),
-                        new Outcome("ha robado mi bicicleta."),
-                        new Outcome("ha posteado mis desnudos en Instagram.")
-                );
-                excusesDao.insertAllOutcome(outcomeList);
+            for (String outcome : excuseData.getOutcomes()) {
+                excusesDao.insertOutcome(new Outcome(outcome));
             }
         });
     }

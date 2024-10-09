@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Excusas</string>
+    <string name="excuse">Excusa</string>
+    <string name="favorite">Favorito</string>
+    <string name="generar">Generar</string>
+    <string name="language">Idioma</string>
+    <string name="english">English</string>
+    <string name="espa_ol">Español</string>
+    <string name="icono_de_la_aplicaci_n">Icono de la aplicación</string>
+    <string name="excuseText">Excusa:</string>
+    <string name="generate">Generar</string>
+    <string name="save_to_favorites">Guardar como favorito</string>
+</resources>
