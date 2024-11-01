@@ -20,7 +20,6 @@ public abstract class DatabaseExcuses extends RoomDatabase {
                             DatabaseExcuses.class, "excusa_db")
                     .build();
         }
-        System.out.println("devolviendo bd");
         return instance;
     }
 }

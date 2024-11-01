@@ -37,7 +37,6 @@ public class ExcusesFragment extends Fragment {
                 requireActivity().runOnUiThread(() -> {
                     binding.receptor.setText(excuse.toString());
 
-                    // Botón para añadir a favoritos
                     binding.addFavoritesButton.setOnClickListener(fav -> {
                         new Thread(() -> {
                             db.excusesDao().insertFavorite(new Favorite(intro, nudo, desenlace));
